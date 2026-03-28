@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect, useMemo } from "react";
+import { useState, useCallback, useRef, useEffect, useLayoutEffect, useMemo } from "react";
 import { MODES, MODE_EXPLORER, MODE_DATA, ANIM, NEUTRAL } from "./constants";
 import { useBreathing } from "./hooks/useBreathing";
 import { useTrinityData } from "./hooks/useTrinityData";
@@ -11,7 +11,7 @@ export default function App() {
   const [mode, setMode] = useState(MODE_EXPLORER);
   const [search, setSearch] = useState("");
   const [confirm, setConfirm] = useState(null);
-  const [pillPos, setPillPos] = useState({ left: 0, width: 0 });
+  const [pillPos, setPillPos] = useState(null);
   const [resetKey, setResetKey] = useState(0);
 
   const { active, displayActive, handleRowClick, reset, shiftDown } = useBreathing();
@@ -29,14 +29,19 @@ export default function App() {
     setResetKey(k => k + 1);
   }, [reset]);
 
-  useEffect(() => {
+  const measurePill = useCallback(() => {
     const btn = btnRefs.current[mode];
     if (btn && navRef.current) {
       const navRect = navRef.current.getBoundingClientRect();
       const btnRect = btn.getBoundingClientRect();
       setPillPos({ left: btnRect.left - navRect.left, width: btnRect.width });
     }
-  }, [mode, loading]);
+  }, [mode]);
+
+  // WHY useLayoutEffect: measure pill before paint so it appears immediately on load
+  useLayoutEffect(() => {
+    measurePill();
+  }, [measurePill, loading]);
 
   const filteredData = useMemo(() => {
     if (search.length >= 2) {
@@ -116,28 +121,30 @@ export default function App() {
         <Triangle active={displayActive} data={data} />
       </div>
 
-      <div className="flex items-center justify-center gap-2 mb-2.5 mt-1">
-        <span className="text-sm text-neutral-muted">
+      <div className="flex items-center justify-center gap-1 mb-2.5 mt-1">
+        <span className="text-[11px] text-neutral-muted whitespace-nowrap">
           {search.length >= 2 ? filteredData.length + "/" : ""}
-          {data.length} Trinities
+          {data.length}
         </span>
 
         <div ref={navRef} className="relative flex">
-          <div
-            className="absolute top-0 h-full rounded-full z-0"
-            style={{
-              background: NEUTRAL.pillTrack,
-              left: pillPos.left,
-              width: pillPos.width,
-              transition: ANIM.pillSlide,
-            }}
-          />
+          {pillPos && (
+            <div
+              className="absolute top-0 h-full rounded-full z-0"
+              style={{
+                background: NEUTRAL.pillTrack,
+                left: pillPos.left,
+                width: pillPos.width,
+                transition: ANIM.pillSlide,
+              }}
+            />
+          )}
           {MODES.map((m) => (
             <button
               key={m.key}
               ref={(el) => { btnRefs.current[m.key] = el; }}
               onClick={() => setMode(m.key)}
-              className="relative z-[1] py-[7px] px-5 text-sm bg-transparent border-none cursor-pointer transition-colors duration-300"
+              className="relative z-[1] py-[7px] px-2.5 text-[13px] bg-transparent border-none cursor-pointer transition-colors duration-300"
               style={{
                 color: mode === m.key ? NEUTRAL.navActive : NEUTRAL.muted,
                 fontWeight: mode === m.key ? 500 : 400,
@@ -148,8 +155,8 @@ export default function App() {
           ))}
         </div>
 
-        <div className="flex items-center gap-1 ml-1">
-          <svg width={14} height={14} viewBox="0 0 16 16" fill="none"
+        <div className="flex items-center gap-0.5">
+          <svg width={13} height={13} viewBox="0 0 16 16" fill="none"
             stroke={NEUTRAL.subtle} strokeWidth={1.5} strokeLinecap="round">
             <circle cx={7} cy={7} r={4.5} />
             <path d="M10.5 10.5L14 14" />
@@ -159,15 +166,15 @@ export default function App() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search..."
-            className="w-[110px] text-[13px] py-1 px-0 border-0 border-b border-b-neutral-border bg-transparent text-neutral-text outline-none"
+            className="w-[72px] text-[12px] py-1 px-0 border-0 border-b border-b-neutral-border bg-transparent text-neutral-text outline-none"
           />
         </div>
 
         <button
           onClick={handleReset}
-          className="p-1.5 bg-transparent text-neutral-subtle border border-neutral-border-light rounded-md cursor-pointer flex items-center justify-center hover:text-neutral-muted"
+          className="p-1 bg-transparent text-neutral-subtle border-none cursor-pointer flex items-center justify-center hover:text-neutral-muted"
         >
-          <svg width={14} height={14} viewBox="0 0 16 16" fill="none"
+          <svg width={13} height={13} viewBox="0 0 16 16" fill="none"
             stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
             <path d="M2 8a6 6 0 0111.47-2.4" />
             <path d="M14 8a6 6 0 01-11.47 2.4" />
