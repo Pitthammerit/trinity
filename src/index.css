@@ -85,29 +85,23 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Loading screen: triangle draws in thirds ── */
+/* ── Loading screen: triangle draws in thirds, then withdraws clockwise ── */
+/* Seamless loop: draw (0-48%) → hold (48-52%) → withdraw (52-100%) */
 
 @keyframes loading-triangle {
-  0%   { stroke-dashoffset: 258; opacity: 0; }
-  5%   { opacity: 1; }
-  20%  { stroke-dashoffset: 172; }
-  30%  { stroke-dashoffset: 172; }
-  50%  { stroke-dashoffset: 86; }
-  60%  { stroke-dashoffset: 86; }
-  80%  { stroke-dashoffset: 0; }
-  90%  { stroke-dashoffset: 0; opacity: 1; }
-  100% { stroke-dashoffset: 0; opacity: 0; }
-}
-
-@keyframes loading-pulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 1; }
-}
-
-/* ── Loading outro: triangle erases clockwise via negative offset ── */
-
-@keyframes loading-triangle-out {
-  0%   { stroke-dashoffset: 0; opacity: 1; }
-  85%  { opacity: 1; }
-  100% { stroke-dashoffset: -258; opacity: 0; }
+  /* Draw in — clockwise, in thirds with pauses */
+  0%   { stroke-dashoffset: 258; }
+  12%  { stroke-dashoffset: 172; }
+  18%  { stroke-dashoffset: 172; }
+  30%  { stroke-dashoffset: 86; }
+  36%  { stroke-dashoffset: 86; }
+  48%  { stroke-dashoffset: 0; }
+  /* Hold fully drawn */
+  52%  { stroke-dashoffset: 0; }
+  /* Withdraw — clockwise erase, in thirds with pauses */
+  64%  { stroke-dashoffset: -86; }
+  70%  { stroke-dashoffset: -86; }
+  82%  { stroke-dashoffset: -172; }
+  88%  { stroke-dashoffset: -172; }
+  100% { stroke-dashoffset: -258; }
 }
