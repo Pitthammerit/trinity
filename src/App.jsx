@@ -15,10 +15,14 @@ export default function App() {
   const [resetKey, setResetKey] = useState(0);
   const [intro, setIntro] = useState(true);
 
-  // WHY phase system: loading screen stays visible ≥2.5s, then fades out, then intro plays
-  // "loading" → show Channeling Trinity; "fading" → fade-out transition; "ready" → main app
+  // WHY phase system: loading → fading → finalCycle → ready
+  // "loading"    = Channeling Trinity, triangle loops draw+withdraw
+  // "fading"     = waiting for triangle to reach loop boundary (invisible moment)
+  // "finalCycle" = one last draw+withdraw plays, text fades during last third
+  // "ready"      = main app with intro animation
   const [phase, setPhase] = useState("loading");
   const [minTimeUp, setMinTimeUp] = useState(false);
+  const pathRef = useRef(null);
 
   const { active, displayActive, handleRowClick, reset, shiftDown } = useBreathing();
   const { data, loading, updateCell, deleteRow, addRow } = useTrinityData();
@@ -32,17 +36,29 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  // When data is loaded AND min time elapsed, start fade-out
+  // When data loaded AND min time: enter fading (wait for loop boundary)
   useEffect(() => {
     if (!loading && minTimeUp && phase === "loading") {
       setPhase("fading");
     }
   }, [loading, minTimeUp, phase]);
 
-  // After outro (text 300ms + triangle fade 1.2s), enter ready phase
+  // "fading" = listen for animationiteration (triangle at invisible boundary)
+  // then trigger one final draw+withdraw cycle
   useEffect(() => {
-    if (phase === "fading") {
-      const timer = setTimeout(() => setPhase("ready"), 1500);
+    if (phase !== "fading") return;
+    const path = pathRef.current;
+    if (!path) { setPhase("finalCycle"); return; }
+
+    const onIteration = () => setPhase("finalCycle");
+    path.addEventListener("animationiteration", onIteration);
+    return () => path.removeEventListener("animationiteration", onIteration);
+  }, [phase]);
+
+  // After final cycle completes (4.8s), enter ready phase
+  useEffect(() => {
+    if (phase === "finalCycle") {
+      const timer = setTimeout(() => setPhase("ready"), 5000);
       return () => clearTimeout(timer);
     }
   }, [phase]);
@@ -114,25 +130,26 @@ export default function App() {
   );
 
   if (phase !== "ready") {
-    const isFading = phase === "fading";
+    const isFinal = phase === "finalCycle";
     return (
       <div className="flex flex-col items-center justify-center h-screen gap-3">
-        <svg width="200" height="180" viewBox="0 0 100 90" fill="none"
-          style={isFading ? {
-            opacity: 0,
-            transition: "opacity 1.2s ease-out 0.3s",
-          } : undefined}>
-          <path d="M50 5 L93 80 L7 80 Z"
+        <svg width="200" height="180" viewBox="0 0 100 90" fill="none">
+          <path ref={pathRef} d="M50 5 L93 80 L7 80 Z"
             stroke={NEUTRAL.line} strokeWidth="0.6" strokeLinejoin="round"
             style={{
               strokeDasharray: 258,
-              animation: "loading-triangle 4.8s ease-in-out infinite",
+              // WHY key change: switching from infinite→once restarts animation at 0%,
+              // which is invisible (same as loop boundary), so transition is seamless
+              animation: isFinal
+                ? "loading-triangle 4.8s ease-in-out both"
+                : "loading-triangle 4.8s ease-in-out infinite",
             }} />
         </svg>
         <div className="text-xs text-neutral-muted font-display uppercase tracking-[3px]"
-          style={isFading ? {
+          style={isFinal ? {
             opacity: 0,
-            transition: "opacity 0.3s ease-out",
+            // WHY 3.8s delay: the last third of withdraw starts at ~82% of 4.8s = 3.94s
+            transition: "opacity 0.6s ease-out 3.6s",
           } : undefined}>
           Channeling Trinity
         </div>
