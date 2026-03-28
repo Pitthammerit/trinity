@@ -124,7 +124,7 @@ export default function App() {
       <div className="flex items-center justify-center gap-1 mb-2.5 mt-1">
         <span className="text-[11px] text-neutral-muted whitespace-nowrap">
           {search.length >= 2 ? filteredData.length + "/" : ""}
-          {data.length}
+          {data.length}{"\u25B3"}
         </span>
 
         <div ref={navRef} className="relative flex">
