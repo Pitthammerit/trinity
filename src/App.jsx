@@ -15,14 +15,12 @@ export default function App() {
   const [resetKey, setResetKey] = useState(0);
   const [intro, setIntro] = useState(true);
 
-  // WHY phase system: loading → exiting → ready
-  // "loading"  = triangle loops draw+withdraw continuously
-  // "exiting"  = Web Animations API lets current cycle finish naturally (no visual change)
-  // "ready"    = main app with intro animation
+  // "loading" = triangle loops draw+withdraw; "ready" = main app with intro
   const [phase, setPhase] = useState("loading");
   const [minTimeUp, setMinTimeUp] = useState(false);
   const [textFading, setTextFading] = useState(false);
   const pathRef = useRef(null);
+  const exitingRef = useRef(false);
 
   const { active, displayActive, handleRowClick, reset, shiftDown } = useBreathing();
   const { data, loading, updateCell, deleteRow, addRow } = useTrinityData();
@@ -36,23 +34,22 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  // WHY Web Animations API: modifying the running animation instance directly
-  // avoids any visual disruption — no CSS swap, no restart, no blend.
-  // The triangle just finishes its current draw+withdraw cycle and stops.
+  // WHY exitingRef instead of state: setPhase("exiting") would re-render,
+  // causing React's effect cleanup to cancel our scheduled timers.
+  // Using a ref avoids the re-render entirely — animation continues undisturbed.
   useEffect(() => {
     if (!(!loading && minTimeUp && phase === "loading")) return;
+    if (exitingRef.current) return;
+    exitingRef.current = true;
+
     const path = pathRef.current;
-    if (!path) { setPhase("ready"); return; }
+    const anim = path?.getAnimations()[0];
+    if (!path || !anim) { setPhase("ready"); return; }
 
-    const anim = path.getAnimations()[0];
-    if (!anim) { setPhase("ready"); return; }
-
-    setPhase("exiting");
-
-    const duration = 4800;
+    const duration = 2400; // matches CSS animation duration
     const currentTime = anim.currentTime;
 
-    // Let the current cycle finish naturally, then stop (no more loops)
+    // Let current cycle finish naturally, then stop (no more loops)
     const targetIter = Math.ceil(currentTime / duration) || 1;
     anim.effect.updateTiming({ iterations: targetIter, fill: "forwards" });
 
@@ -61,13 +58,11 @@ export default function App() {
     const lastThirdStart = endTime - (duration * 0.18);
     const textDelay = Math.max(0, lastThirdStart - currentTime);
 
-    // Fade text when last third of triangle withdrawal begins
-    const textTimer = setTimeout(() => setTextFading(true), textDelay);
+    // Fade text when last third of withdrawal begins
+    setTimeout(() => setTextFading(true), textDelay);
 
     // Transition to ready after animation ends + text fade (1s) completes
-    const readyTimer = setTimeout(() => setPhase("ready"), endTime - currentTime + 1200);
-
-    return () => { clearTimeout(textTimer); clearTimeout(readyTimer); };
+    setTimeout(() => setPhase("ready"), endTime - currentTime + 1200);
   }, [loading, minTimeUp, phase]);
 
   const dismissConfirm = useCallback(() => setConfirm(null), []);
@@ -144,11 +139,14 @@ export default function App() {
             stroke={NEUTRAL.line} strokeWidth="0.6" strokeLinejoin="round"
             style={{
               strokeDasharray: 258,
-              animation: "loading-triangle 4.8s ease-in-out infinite",
+              animation: "loading-triangle 2.4s ease-in-out infinite",
             }} />
         </svg>
         <div className="text-xs text-neutral-muted font-display uppercase tracking-[3px]"
-          style={textFading ? { opacity: 0, transition: "opacity 1s ease-out" } : undefined}>
+          style={textFading
+            ? { opacity: 0, transition: "opacity 1s ease-out" }
+            : { animation: "intro-fade 0.8s ease-out both" }
+          }>
           Channeling Trinity
         </div>
       </div>
