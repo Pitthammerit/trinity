@@ -1,5 +1,5 @@
 import { useRef, useMemo } from "react";
-import { SECTION_META, ANIM, SVG, NEUTRAL, FONTS } from "../constants";
+import { SECTION_META, ANIM, SVG, NEUTRAL, FONTS, OM_GRADIENT_STOPS } from "../constants";
 import { colorVariants } from "../utils/colors";
 import { fitText } from "../utils/fitText";
 
@@ -87,10 +87,10 @@ export default function Triangle({ active, data }) {
       <defs>
         <linearGradient id="omRainbow" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" stopColor={SECTION_META.beginning.color} stopOpacity="0.35" />
-          <stop offset="20%" stopColor="#D8A030" stopOpacity="0.3" />
-          <stop offset="40%" stopColor="#50B860" stopOpacity="0.25" />
+          <stop offset="20%" stopColor={OM_GRADIENT_STOPS[0]} stopOpacity="0.3" />
+          <stop offset="40%" stopColor={OM_GRADIENT_STOPS[1]} stopOpacity="0.25" />
           <stop offset="60%" stopColor={SECTION_META.middle.color} stopOpacity="0.25" />
-          <stop offset="80%" stopColor="#4070B0" stopOpacity="0.3" />
+          <stop offset="80%" stopColor={OM_GRADIENT_STOPS[2]} stopOpacity="0.3" />
           <stop offset="100%" stopColor={SECTION_META.end.color} stopOpacity="0.35" />
         </linearGradient>
       </defs>

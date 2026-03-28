@@ -8,7 +8,7 @@ export function useTrinityData() {
 
   useEffect(() => {
     fetch("/api/data")
-      .then(res => res.json())
+      .then(res => { if (!res.ok) throw new Error(res.status); return res.json(); })
       .then(d => { setData(d); setLoading(false); })
       .catch(() => setLoading(false));
   }, []);
@@ -25,9 +25,10 @@ export function useTrinityData() {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ key, value }),
-    }).catch(() => {
-      setData(prev => prev.map((r, i) => i === idx ? { ...r, [key]: row[key] } : r));
-    });
+    }).then(res => { if (!res.ok) throw new Error(res.status); })
+      .catch(() => {
+        setData(prev => prev.map((r, i) => i === idx ? { ...r, [key]: row[key] } : r));
+      });
   }, []);
 
   const deleteRow = useCallback((idx) => {
@@ -38,7 +39,9 @@ export function useTrinityData() {
     setData(prev => prev.filter((_, i) => i !== idx));
 
     // Persist — rollback on failure
-    fetch(`/api/data/${row.id}`, { method: "DELETE" }).catch(() => {
+    fetch(`/api/data/${row.id}`, { method: "DELETE" })
+      .then(res => { if (!res.ok) throw new Error(res.status); })
+      .catch(() => {
       setData(prev => {
         const next = [...prev];
         next.splice(idx, 0, row);
@@ -54,7 +57,7 @@ export function useTrinityData() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     })
-      .then(res => res.json())
+      .then(res => { if (!res.ok) throw new Error(res.status); return res.json(); })
       .then(created => { setData(prev => [...prev, created]); })
       .catch(() => { /* row was never added to state, nothing to rollback */ });
   }, []);

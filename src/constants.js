@@ -30,7 +30,7 @@ export const NEUTRAL = {
   borderLight: "#ddd",
   surface: "#f8f8f8",
   disabled: "#ccc",
-  white: "#fff",
+  white: "#ffffff",
   danger: "#c0392b",
   success: "#22c55e",
   focus: "#3b82f6",
@@ -54,6 +54,8 @@ export const ANIM = {
   pillSlide: "left 0.35s cubic-bezier(0.4,0,0.2,1), width 0.3s cubic-bezier(0.4,0,0.2,1)",
   triangleCollapse: "max-height 0.45s ease, opacity 0.35s ease, transform 0.4s ease",
 };
+
+export const OM_GRADIENT_STOPS = ["#D8A030", "#50B860", "#4070B0"];
 
 export const SVG = {
   cx: 200,

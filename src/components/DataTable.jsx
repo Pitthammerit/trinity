@@ -61,7 +61,7 @@ export default function DataTable({
 
   return (
     <div ref={listRef} onScroll={handleScroll}
-      className="overflow-y-auto transition-[max-height] duration-400 ease-in-out"
+      className="overflow-y-auto transition-[max-height] duration-[400ms] ease-in-out"
       style={{ maxHeight }}>
       <table className="w-full border-separate text-[13px]"
         style={{ borderSpacing: "0 2px", tableLayout: "fixed" }}>
