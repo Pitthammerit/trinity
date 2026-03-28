@@ -61,8 +61,9 @@ export default function App() {
     // Fade text when last third of withdrawal begins
     setTimeout(() => setTextFading(true), textDelay);
 
-    // Transition to ready after animation ends + text fade (1s) completes
-    setTimeout(() => setPhase("ready"), endTime - currentTime + 1200);
+    // Transition to ready after text fade (1s) fully completes
+    const animRemaining = endTime - currentTime;
+    setTimeout(() => setPhase("ready"), Math.max(animRemaining + 200, textDelay + 1500));
   }, [loading, minTimeUp, phase]);
 
   const dismissConfirm = useCallback(() => setConfirm(null), []);
