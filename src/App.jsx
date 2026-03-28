@@ -120,14 +120,14 @@ export default function App() {
           opacity: phase === "fading" ? 0 : 1,
           transition: "opacity 0.6s ease-out",
         }}>
-        <svg width="140" height="126" viewBox="0 0 100 90" fill="none">
+        <svg width="200" height="180" viewBox="0 0 100 90" fill="none">
           <path d="M50 5 L93 80 L7 80 Z"
             stroke={NEUTRAL.line} strokeWidth="1.2" strokeLinejoin="round"
             style={{ strokeDasharray: 258, animation: "loading-triangle 2.4s ease-in-out infinite" }} />
         </svg>
         <div className="text-xs text-neutral-muted font-display uppercase tracking-[3px]"
           style={{ animation: "loading-pulse 2.4s ease-in-out infinite" }}>
-          Channeling Trinity...
+          Channeling Trinity
         </div>
       </div>
     );
