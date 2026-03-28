@@ -72,7 +72,7 @@ export const SVG = {
   cx: 200,
   cy: 200,
   r: 145,
-  viewBox: "0 0 400 395",
+  viewBox: "0 0 400 415",
   restR: 36,
   activeR: 48,
   arcOffset: 0.24,

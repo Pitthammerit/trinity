@@ -339,7 +339,7 @@ export default function App() {
         <>
           <div
             style={{
-              maxHeight: showTriangle ? "min(700px, calc(100vh - 280px))" : 0,
+              maxHeight: showTriangle ? (isDesktop ? "min(600px, calc(100vh - 380px))" : "46vh") : 0,
               opacity: showTriangle ? 1 : 0,
               transform: showTriangle ? "scale(1)" : "scale(0.6)",
               transformOrigin: "top center",
