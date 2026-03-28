@@ -9,10 +9,10 @@ import PasscodeGate from "./components/PasscodeGate";
 
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(
-    () => typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches,
+    () => typeof window !== "undefined" && window.matchMedia("(min-width: 768px)").matches,
   );
   useEffect(() => {
-    const mql = window.matchMedia("(min-width: 1024px)");
+    const mql = window.matchMedia("(min-width: 768px)");
     const handler = (e) => setIsDesktop(e.matches);
     mql.addEventListener("change", handler);
     return () => mql.removeEventListener("change", handler);
@@ -114,7 +114,7 @@ export default function App() {
   // Intro animation timer starts when app is ready
   useEffect(() => {
     if (phase === "ready" && intro) {
-      const timer = setTimeout(() => setIntro(false), 3200);
+      const timer = setTimeout(() => setIntro(false), 2200);
       return () => clearTimeout(timer);
     }
   }, [phase, intro]);
@@ -190,7 +190,7 @@ export default function App() {
 
   const navBar = (
     <div className="flex items-center justify-center gap-1"
-      style={intro ? { animation: "intro-slide-down 0.5s ease-out 2.0s both" } : undefined}>
+      style={intro ? { animation: "intro-slide-down 0.5s ease-out 1.2s both" } : undefined}>
       <span className="text-[13px] text-neutral-muted whitespace-nowrap">
         {search.length >= 2 ? filteredData.length + "/" : ""}
         {data.length}{"\u25B3"}
@@ -250,7 +250,9 @@ export default function App() {
     </div>
   );
 
-  const tableMaxHeight = isSplit ? "none" : (effectiveMode === MODE_EXPLORER ? 380 : 600);
+  const tableMaxHeight = isSplit ? "none"
+    : !isDesktop ? "100%"
+    : effectiveMode === MODE_EXPLORER ? 380 : 600;
 
   const table = (
     <DataTable
@@ -272,10 +274,11 @@ export default function App() {
 
   return (
     <div
-      className="mx-auto px-2.5 pt-[18px] pb-8"
+      className="mx-auto px-2.5 pt-[18px] pb-4"
       style={{
         maxWidth: isSplit ? 1100 : 660,
         transition: ANIM.splitLayout,
+        ...(!isDesktop && !isSplit ? { height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" } : {}),
       }}
     >
       {confirm && (
@@ -327,7 +330,7 @@ export default function App() {
           <div style={{ position: "sticky", top: 18, alignSelf: "start" }}>
             <Triangle active={displayActive} data={data} intro={intro} />
           </div>
-          <div style={intro ? { animation: "intro-fade 0.5s ease-out 2.3s both" } : undefined}>
+          <div style={intro ? { animation: "intro-fade 0.5s ease-out 1.5s both" } : undefined}>
             {tableContent}
           </div>
         </div>
@@ -336,7 +339,7 @@ export default function App() {
         <>
           <div
             style={{
-              maxHeight: showTriangle ? 700 : 0,
+              maxHeight: showTriangle ? "min(700px, calc(100vh - 280px))" : 0,
               opacity: showTriangle ? 1 : 0,
               transform: showTriangle ? "scale(1)" : "scale(0.6)",
               transformOrigin: "top center",
@@ -360,14 +363,17 @@ export default function App() {
             {!navAtTop && navBar}
           </div>
 
-          <div style={intro ? { animation: "intro-fade 0.5s ease-out 2.3s both" } : undefined}>
+          <div style={{
+            ...(intro ? { animation: "intro-fade 0.5s ease-out 1.5s both" } : undefined),
+            ...(!isDesktop ? { flex: 1, minHeight: 0 } : {}),
+          }}>
             {tableContent}
           </div>
         </>
       )}
 
-      <div className="text-center mt-6 text-[10px] text-neutral-subtle tracking-[1px] font-display"
-        style={intro ? { animation: "intro-fade 0.4s ease-out 2.6s both" } : undefined}>
+      <div className="text-center mt-2 text-[10px] text-neutral-subtle tracking-[1px] font-display"
+        style={intro ? { animation: "intro-fade 0.4s ease-out 1.8s both" } : undefined}>
         {"\u00A9"} 2026 Muralidher & Benjamin Kurtz, Mysuru, India
       </div>
     </div>
