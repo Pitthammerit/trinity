@@ -15,13 +15,13 @@ export default function App() {
   const [resetKey, setResetKey] = useState(0);
   const [intro, setIntro] = useState(true);
 
-  // WHY phase system: loading → fading → finalCycle → ready
-  // "loading"    = Channeling Trinity, triangle loops draw+withdraw
-  // "fading"     = waiting for triangle to reach loop boundary (invisible moment)
-  // "finalCycle" = one last draw+withdraw plays, text fades during last third
-  // "ready"      = main app with intro animation
+  // WHY phase system: loading → exiting → ready
+  // "loading"  = triangle loops draw+withdraw continuously
+  // "exiting"  = Web Animations API lets current cycle finish naturally (no visual change)
+  // "ready"    = main app with intro animation
   const [phase, setPhase] = useState("loading");
   const [minTimeUp, setMinTimeUp] = useState(false);
+  const [textFading, setTextFading] = useState(false);
   const pathRef = useRef(null);
 
   const { active, displayActive, handleRowClick, reset, shiftDown } = useBreathing();
@@ -30,38 +30,45 @@ export default function App() {
   const navRef = useRef(null);
   const btnRefs = useRef({});
 
-  // Minimum 2.5s loading screen
+  // Minimum 3s loading screen
   useEffect(() => {
-    const timer = setTimeout(() => setMinTimeUp(true), 2500);
+    const timer = setTimeout(() => setMinTimeUp(true), 3000);
     return () => clearTimeout(timer);
   }, []);
 
-  // When data loaded AND min time: enter fading (wait for loop boundary)
+  // WHY Web Animations API: modifying the running animation instance directly
+  // avoids any visual disruption — no CSS swap, no restart, no blend.
+  // The triangle just finishes its current draw+withdraw cycle and stops.
   useEffect(() => {
-    if (!loading && minTimeUp && phase === "loading") {
-      setPhase("fading");
-    }
-  }, [loading, minTimeUp, phase]);
-
-  // "fading" = listen for animationiteration (triangle at invisible boundary)
-  // then trigger one final draw+withdraw cycle
-  useEffect(() => {
-    if (phase !== "fading") return;
+    if (!(!loading && minTimeUp && phase === "loading")) return;
     const path = pathRef.current;
-    if (!path) { setPhase("finalCycle"); return; }
+    if (!path) { setPhase("ready"); return; }
 
-    const onIteration = () => setPhase("finalCycle");
-    path.addEventListener("animationiteration", onIteration);
-    return () => path.removeEventListener("animationiteration", onIteration);
-  }, [phase]);
+    const anim = path.getAnimations()[0];
+    if (!anim) { setPhase("ready"); return; }
 
-  // After final cycle completes (4.8s), enter ready phase
-  useEffect(() => {
-    if (phase === "finalCycle") {
-      const timer = setTimeout(() => setPhase("ready"), 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [phase]);
+    setPhase("exiting");
+
+    const duration = 4800;
+    const currentTime = anim.currentTime;
+
+    // Let the current cycle finish naturally, then stop (no more loops)
+    const targetIter = Math.ceil(currentTime / duration) || 1;
+    anim.effect.updateTiming({ iterations: targetIter, fill: "forwards" });
+
+    // Calculate when the last third of withdraw starts (82% of cycle)
+    const endTime = targetIter * duration;
+    const lastThirdStart = endTime - (duration * 0.18);
+    const textDelay = Math.max(0, lastThirdStart - currentTime);
+
+    // Fade text when last third of triangle withdrawal begins
+    const textTimer = setTimeout(() => setTextFading(true), textDelay);
+
+    // Transition to ready after animation ends + text fade (1s) completes
+    const readyTimer = setTimeout(() => setPhase("ready"), endTime - currentTime + 1200);
+
+    return () => { clearTimeout(textTimer); clearTimeout(readyTimer); };
+  }, [loading, minTimeUp, phase]);
 
   const dismissConfirm = useCallback(() => setConfirm(null), []);
 
@@ -130,7 +137,6 @@ export default function App() {
   );
 
   if (phase !== "ready") {
-    const isFinal = phase === "finalCycle";
     return (
       <div className="flex flex-col items-center justify-center h-screen gap-3">
         <svg width="200" height="180" viewBox="0 0 100 90" fill="none">
@@ -138,19 +144,11 @@ export default function App() {
             stroke={NEUTRAL.line} strokeWidth="0.6" strokeLinejoin="round"
             style={{
               strokeDasharray: 258,
-              // WHY key change: switching from infinite→once restarts animation at 0%,
-              // which is invisible (same as loop boundary), so transition is seamless
-              animation: isFinal
-                ? "loading-triangle 4.8s ease-in-out both"
-                : "loading-triangle 4.8s ease-in-out infinite",
+              animation: "loading-triangle 4.8s ease-in-out infinite",
             }} />
         </svg>
         <div className="text-xs text-neutral-muted font-display uppercase tracking-[3px]"
-          style={isFinal ? {
-            opacity: 0,
-            // WHY 3.8s delay: the last third of withdraw starts at ~82% of 4.8s = 3.94s
-            transition: "opacity 0.6s ease-out 3.6s",
-          } : undefined}>
+          style={textFading ? { opacity: 0, transition: "opacity 1s ease-out" } : undefined}>
           Channeling Trinity
         </div>
       </div>
