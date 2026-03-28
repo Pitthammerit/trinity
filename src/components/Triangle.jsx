@@ -116,8 +116,8 @@ export default function Triangle({ active, data }) {
           style={{ transition: ANIM.strokeGrow }} />
       ))}
 
-      <text x={cx} y={cy + 8} textAnchor="middle" dominantBaseline="central"
-        style={{ fontSize: 120, fontWeight: 300, fill: "url(#omRainbow)", fontFamily: FONTS.display }}>
+      <text x={cx} y={cy + 5} textAnchor="middle" dominantBaseline="central"
+        style={{ fontSize: SVG.omFontSize, fontWeight: 300, fill: "url(#omRainbow)", fontFamily: FONTS.display }}>
         {"\u0950"}
       </text>
 

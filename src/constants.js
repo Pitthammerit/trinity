@@ -68,4 +68,5 @@ export const SVG = {
   ribbonStartHW: 0.25,
   ribbonEndHW: 1.5,
   ribbonSegments: 24,
+  omFontSize: 80,
 };
