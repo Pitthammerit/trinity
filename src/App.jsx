@@ -39,10 +39,10 @@ export default function App() {
     }
   }, [loading, minTimeUp, phase]);
 
-  // After fade-out animation (600ms), enter ready phase
+  // After outro animation (text 300ms + triangle 700ms), enter ready phase
   useEffect(() => {
     if (phase === "fading") {
-      const timer = setTimeout(() => setPhase("ready"), 600);
+      const timer = setTimeout(() => setPhase("ready"), 1000);
       return () => clearTimeout(timer);
     }
   }, [phase]);
@@ -114,19 +114,25 @@ export default function App() {
   );
 
   if (phase !== "ready") {
+    const isFading = phase === "fading";
     return (
-      <div className="flex flex-col items-center justify-center h-screen gap-3"
-        style={{
-          opacity: phase === "fading" ? 0 : 1,
-          transition: "opacity 0.6s ease-out",
-        }}>
+      <div className="flex flex-col items-center justify-center h-screen gap-3">
         <svg width="200" height="180" viewBox="0 0 100 90" fill="none">
           <path d="M50 5 L93 80 L7 80 Z"
             stroke={NEUTRAL.line} strokeWidth="0.6" strokeLinejoin="round"
-            style={{ strokeDasharray: 258, animation: "loading-triangle 2.4s ease-in-out infinite" }} />
+            style={{
+              strokeDasharray: 258,
+              animation: isFading
+                ? "loading-triangle-out 0.7s ease-in 0.3s both"
+                : "loading-triangle 2.4s ease-in-out infinite",
+            }} />
         </svg>
         <div className="text-xs text-neutral-muted font-display uppercase tracking-[3px]"
-          style={{ animation: "loading-pulse 2.4s ease-in-out infinite" }}>
+          style={{
+            animation: isFading
+              ? "loading-text-out 0.3s ease-out both"
+              : "loading-pulse 2.4s ease-in-out infinite",
+          }}>
           Channeling Trinity
         </div>
       </div>
