@@ -104,7 +104,7 @@ export default function DataTable({
             </tr>
           )}
 
-          {filteredData.map((row) => {
+          {filteredData.map((row, displayIdx) => {
             const idx = row._idx;
             const cv = colorMap.get(row.id);
             const isActive = active === idx;
@@ -123,7 +123,7 @@ export default function DataTable({
                   color: cv.fill, fontWeight: 500,
                   borderLeft: `4px solid ${cv.fill}`, borderRadius: "4px 0 0 4px",
                   background: isActive ? cv.bg : cv.bg + "55",
-                }}>{row.id}</td>
+                }}>{displayIdx + 1}</td>
                 {SECTION_KEYS.map((key) => (
                   isData ? (
                     <EditableCell key={key} value={row[key]}

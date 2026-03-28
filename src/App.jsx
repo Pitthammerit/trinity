@@ -88,8 +88,16 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen text-base text-neutral-muted font-display">
-        Loading...
+      <div className="flex flex-col items-center justify-center h-screen gap-5">
+        <svg width="60" height="54" viewBox="0 0 100 90" fill="none">
+          <path d="M50 5 L93 80 L7 80 Z"
+            stroke={NEUTRAL.line} strokeWidth="1.5" strokeLinejoin="round"
+            style={{ strokeDasharray: 258, animation: "loading-triangle 2.4s ease-in-out infinite" }} />
+        </svg>
+        <div className="text-xs text-neutral-muted font-display uppercase tracking-[3px]"
+          style={{ animation: "loading-pulse 2.4s ease-in-out infinite" }}>
+          Channeling Trinity...
+        </div>
       </div>
     );
   }
@@ -107,11 +115,13 @@ export default function App() {
         />
       )}
 
-      <div className="text-center" style={intro ? { animation: "intro-fade 0.8s ease-out both" } : undefined}>
-        <div className="text-[14px] font-normal uppercase tracking-[5px] text-neutral-muted font-display">
+      <div className="text-center">
+        <div className="text-[14px] font-normal uppercase tracking-[5px] text-neutral-muted font-display"
+          style={intro ? { animation: "intro-fade 1.0s ease-out both" } : undefined}>
           Concept of
         </div>
-        <div className="text-2xl font-medium uppercase tracking-[3px] text-neutral-text font-display">
+        <div className="text-2xl font-medium uppercase tracking-[3px] text-neutral-text font-display"
+          style={intro ? { animation: "intro-fade 1.0s ease-out 0.5s both" } : undefined}>
           Trinity in the Universe
         </div>
       </div>
