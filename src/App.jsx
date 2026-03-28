@@ -250,7 +250,7 @@ export default function App() {
     </div>
   );
 
-  const tableMaxHeight = isSplit ? "none" : "100%";
+  const tableMaxHeight = "100%";
 
   const table = (
     <DataTable
@@ -276,7 +276,7 @@ export default function App() {
       style={{
         maxWidth: isSplit ? 1100 : 660,
         transition: ANIM.splitLayout,
-        ...(!isSplit ? { height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" } : {}),
+        height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden",
       }}
     >
       {confirm && (
@@ -319,16 +319,19 @@ export default function App() {
         <div
           className="split-grid"
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "2rem",
+            display: "flex",
+            gap: "1rem",
             transition: ANIM.splitLayout,
+            flex: 1, minHeight: 0,
           }}
         >
-          <div style={{ position: "sticky", top: 18, alignSelf: "start" }}>
+          <div style={{ flex: "1 1 0%", minWidth: 0, alignSelf: "start" }}>
             <Triangle active={displayActive} data={data} intro={intro} />
           </div>
-          <div style={intro ? { animation: "intro-fade 0.5s ease-out 1.5s both" } : undefined}>
+          <div style={{
+            ...(intro ? { animation: "intro-fade 0.5s ease-out 1.5s both" } : undefined),
+            flex: "0 0 auto", width: "clamp(320px, 55%, 600px)", minHeight: 0,
+          }}>
             {tableContent}
           </div>
         </div>
