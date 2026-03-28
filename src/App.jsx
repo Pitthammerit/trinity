@@ -131,9 +131,7 @@ export default function App() {
           style={isFading ? {
             opacity: 0,
             transition: "opacity 0.3s ease-out",
-          } : {
-            animation: "loading-pulse 2.4s ease-in-out infinite",
-          }}>
+          } : undefined}>
           Channeling Trinity
         </div>
       </div>
@@ -224,7 +222,7 @@ export default function App() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search..."
-            className="w-[72px] text-[12px] py-1 px-0 border-0 border-b border-b-neutral-border bg-transparent text-neutral-text outline-none font-display"
+            className="w-[72px] text-[13px] py-1 px-0 border-0 border-b border-b-neutral-border bg-transparent text-neutral-text outline-none"
           />
         </div>
 
