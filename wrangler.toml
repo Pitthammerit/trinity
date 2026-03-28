@@ -1,0 +1,8 @@
+name = "trinity"
+compatibility_date = "2024-12-01"
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "trinity-db"
+database_id = "5361c936-6cbf-4654-a6aa-757d352fbbbf"
