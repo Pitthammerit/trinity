@@ -26,15 +26,18 @@ export async function onRequestPost(context) {
   }
 
   const b = beginning.trim(), m = middle.trim(), e = end.trim();
-  const { results: sortResult } = await db.prepare("SELECT COALESCE(MAX(sort_order), 0) as m FROM trinities").all();
-  const maxSort = sortResult[0].m;
+  const { results: maxResult } = await db.prepare(
+    "SELECT COALESCE(MAX(id), 0) as maxId, COALESCE(MAX(sort_order), 0) as maxSort FROM trinities"
+  ).all();
+  const nextId = maxResult[0].maxId + 1;
+  const nextSort = maxResult[0].maxSort + 1;
 
-  const result = await db.prepare(
-    "INSERT INTO trinities (beginning, middle, end_col, color, sort_order) VALUES (?, ?, ?, ?, ?)"
-  ).bind(b, m, e, color, maxSort + 1).run();
+  await db.prepare(
+    "INSERT INTO trinities (id, beginning, middle, end_col, color, sort_order) VALUES (?, ?, ?, ?, ?, ?)"
+  ).bind(nextId, b, m, e, color, nextSort).run();
 
   return Response.json(
-    { id: Number(result.meta.last_row_id), beginning: b, middle: m, end: e, color },
+    { id: nextId, beginning: b, middle: m, end: e, color },
     { status: 201 }
   );
 }

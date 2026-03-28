@@ -25,14 +25,17 @@ app.post("/api/data", (req, res) => {
     return res.status(400).json({ error: "beginning, middle, end, color are required" });
   }
   const b = beginning.trim(), m = middle.trim(), e = end.trim();
-  const maxSort = db.prepare("SELECT COALESCE(MAX(sort_order), 0) as m FROM trinities").get().m;
+  const { maxId, maxSort } = db.prepare(
+    "SELECT COALESCE(MAX(id), 0) as maxId, COALESCE(MAX(sort_order), 0) as maxSort FROM trinities"
+  ).get();
+  const nextId = maxId + 1;
+  const nextSort = maxSort + 1;
 
-  const result = db.prepare(`
-    INSERT INTO trinities (beginning, middle, end_col, color, sort_order)
-    VALUES (?, ?, ?, ?, ?)
-  `).run(b, m, e, color, maxSort + 1);
+  db.prepare(
+    "INSERT INTO trinities (id, beginning, middle, end_col, color, sort_order) VALUES (?, ?, ?, ?, ?, ?)"
+  ).run(nextId, b, m, e, color, nextSort);
 
-  res.status(201).json({ id: Number(result.lastInsertRowid), beginning: b, middle: m, end: e, color });
+  res.status(201).json({ id: nextId, beginning: b, middle: m, end: e, color });
 });
 
 app.put("/api/data/:id", (req, res) => {
