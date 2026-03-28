@@ -250,9 +250,7 @@ export default function App() {
     </div>
   );
 
-  const tableMaxHeight = isSplit ? "none"
-    : !isDesktop ? "100%"
-    : effectiveMode === MODE_EXPLORER ? 380 : 600;
+  const tableMaxHeight = isSplit ? "none" : "100%";
 
   const table = (
     <DataTable
@@ -278,7 +276,7 @@ export default function App() {
       style={{
         maxWidth: isSplit ? 1100 : 660,
         transition: ANIM.splitLayout,
-        ...(!isDesktop && !isSplit ? { height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" } : {}),
+        ...(!isSplit ? { height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" } : {}),
       }}
     >
       {confirm && (
@@ -365,7 +363,7 @@ export default function App() {
 
           <div style={{
             ...(intro ? { animation: "intro-fade 0.5s ease-out 1.5s both" } : undefined),
-            ...(!isDesktop ? { flex: 1, minHeight: 0 } : {}),
+            flex: 1, minHeight: 0,
           }}>
             {tableContent}
           </div>

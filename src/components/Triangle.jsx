@@ -87,7 +87,7 @@ export default function Triangle({ active, data, intro }) {
   );
 
   return (
-    <svg viewBox={SVG.viewBox} style={{ width: "100%", display: "block", margin: "0 auto" }}>
+    <svg viewBox={SVG.viewBox} style={{ width: "100%", maxHeight: "100%", display: "block", margin: "0 auto" }}>
       <defs>
         <linearGradient id="omRainbow" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" stopColor={SECTION_META.beginning.color} stopOpacity="0.35" />
