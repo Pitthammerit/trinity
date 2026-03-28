@@ -100,7 +100,7 @@ export default function App() {
       )}
 
       <div className="text-center">
-        <div className="text-[13px] font-normal uppercase tracking-[5px] text-neutral-subtle font-display">
+        <div className="text-[14px] font-normal uppercase tracking-[5px] text-neutral-muted font-display">
           Concept of
         </div>
         <div className="text-2xl font-medium uppercase tracking-[3px] text-neutral-text font-display">
@@ -122,7 +122,7 @@ export default function App() {
       </div>
 
       <div className="flex items-center justify-center gap-1 mb-2.5 mt-1">
-        <span className="text-[11px] text-neutral-muted whitespace-nowrap">
+        <span className="text-[13px] text-neutral-muted whitespace-nowrap">
           {search.length >= 2 ? filteredData.length + "/" : ""}
           {data.length}{"\u25B3"}
         </span>

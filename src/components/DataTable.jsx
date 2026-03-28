@@ -63,7 +63,7 @@ export default function DataTable({
     <div ref={listRef} onScroll={handleScroll}
       className="overflow-y-auto transition-[max-height] duration-[400ms] ease-in-out"
       style={{ maxHeight }}>
-      <table className="w-full border-separate text-[13px]"
+      <table className="w-full border-separate text-[14px]"
         style={{ borderSpacing: "0 2px", tableLayout: "fixed" }}>
         <thead>
           <tr>
@@ -109,7 +109,7 @@ export default function DataTable({
             const cv = colorMap.get(row.id);
             const isActive = active === idx;
             const cellStyle = {
-              padding: "6px 8px", fontSize: 13,
+              padding: "6px 8px", fontSize: 14,
               color: isActive ? NEUTRAL.white : cv.fill, fontWeight: isActive ? 500 : 400,
               background: isActive ? cv.fill : cv.bg + "55",
               transition: ANIM.rowTransition,
