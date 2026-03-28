@@ -46,7 +46,7 @@ export default function App() {
 
   useEffect(() => {
     if (!loading && intro) {
-      const timer = setTimeout(() => setIntro(false), 2000);
+      const timer = setTimeout(() => setIntro(false), 3200);
       return () => clearTimeout(timer);
     }
   }, [loading, intro]);
@@ -107,7 +107,7 @@ export default function App() {
         />
       )}
 
-      <div className="text-center" style={intro ? { animation: "intro-fade 0.6s ease-out both" } : undefined}>
+      <div className="text-center" style={intro ? { animation: "intro-fade 0.8s ease-out both" } : undefined}>
         <div className="text-[14px] font-normal uppercase tracking-[5px] text-neutral-muted font-display">
           Concept of
         </div>
@@ -130,7 +130,7 @@ export default function App() {
       </div>
 
       <div className="flex items-center justify-center gap-1 mb-2.5 mt-1"
-        style={intro ? { animation: "intro-slide-down 0.4s ease-out 1.3s both" } : undefined}>
+        style={intro ? { animation: "intro-slide-down 0.5s ease-out 2.0s both" } : undefined}>
         <span className="text-[13px] text-neutral-muted whitespace-nowrap">
           {search.length >= 2 ? filteredData.length + "/" : ""}
           {data.length}{"\u25B3"}
@@ -193,7 +193,7 @@ export default function App() {
         </button>
       </div>
 
-      <div style={intro ? { animation: "intro-fade 0.5s ease-out 1.5s both" } : undefined}>
+      <div style={intro ? { animation: "intro-fade 0.5s ease-out 2.3s both" } : undefined}>
       {(() => {
         const table = (
           <DataTable
@@ -215,7 +215,7 @@ export default function App() {
       </div>
 
       <div className="text-center mt-6 text-[10px] text-neutral-subtle tracking-[1px] font-display"
-        style={intro ? { animation: "intro-fade 0.3s ease-out 1.7s both" } : undefined}>
+        style={intro ? { animation: "intro-fade 0.4s ease-out 2.6s both" } : undefined}>
         {"\u00A9"} 2026 Muralidher & Benjamin Kurtz, Mysuru, India
       </div>
     </div>

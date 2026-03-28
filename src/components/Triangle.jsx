@@ -105,13 +105,13 @@ export default function Triangle({ active, data, intro }) {
             strokeDasharray: CIRCLE_CIRCUMFERENCE,
             transform: "rotate(-90deg)",
             transformOrigin: `${cx}px ${cy}px`,
-            animation: "intro-draw-circle 0.7s ease-out 0.3s both",
+            animation: "intro-draw-circle 1.0s ease-out 0.5s both",
           } : undefined} />
         {RIBBON_DATA.map(({ ribbonD, arrowPoints, sectionColor }, i) => {
           const fill = hasActive ? cv.fill : sectionColor;
           return (
             <g key={i} style={intro
-              ? { animation: `intro-fade 0.4s ease-out ${0.75 + i * 0.1}s both` }
+              ? { animation: `intro-fade 0.5s ease-out ${1.4 + i * 0.2}s both` }
               : { transition: ANIM.opacityFade }
             }>
               <path d={ribbonD} fill={fill} style={intro ? undefined : { transition: ANIM.fillChange }} />
@@ -127,7 +127,7 @@ export default function Triangle({ active, data, intro }) {
           strokeWidth={hasActive ? 4.5 : 0.8}
           opacity={hasActive ? 0.3 : 0.4}
           style={intro
-            ? { strokeDasharray: EDGE_LENGTH, animation: `intro-draw-edge 0.4s ease-out ${0.55 + i * 0.08}s both` }
+            ? { strokeDasharray: EDGE_LENGTH, animation: `intro-draw-edge 0.5s ease-out ${0.9 + i * 0.15}s both` }
             : { transition: ANIM.strokeGrow }
           } />
       ))}
@@ -135,7 +135,7 @@ export default function Triangle({ active, data, intro }) {
       <text x={cx} y={cy + 5} textAnchor="middle" dominantBaseline="central"
         style={{
           fontSize: SVG.omFontSize, fontWeight: 300, fill: "url(#omRainbow)", fontFamily: FONTS.display,
-          ...(intro ? { animation: "intro-breathe 0.6s ease-out 0.15s both", transformOrigin: `${cx}px ${cy}px` } : {}),
+          ...(intro ? { animation: "intro-breathe 0.8s ease-out 0.3s both", transformOrigin: `${cx}px ${cy}px` } : {}),
         }}>
         {"\u0950"}
       </text>
@@ -150,7 +150,7 @@ export default function Triangle({ active, data, intro }) {
         const y1 = hasTwo ? v.y - 11 : v.y - 5;
         return (
           <g key={v.key} style={intro ? {
-            animation: `intro-bloom 0.5s ease-out ${0.65 + vi * 0.1}s both`,
+            animation: `intro-bloom 0.6s ease-out ${1.0 + vi * 0.2}s both`,
             transformOrigin: `${v.x}px ${v.y}px`,
           } : undefined}>
             <circle cx={v.x} cy={v.y} r={hasActive ? SVG.activeR : SVG.restR}
