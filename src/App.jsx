@@ -105,7 +105,7 @@ export default function App() {
   const showTriangle = mode === MODE_EXPLORER;
 
   return (
-    <div className="max-w-[520px] mx-auto px-2.5 pt-[18px] pb-8">
+    <div className="max-w-[520px] sm:max-w-[660px] mx-auto px-2.5 pt-[18px] pb-8">
       {confirm && (
         <ConfirmDialog
           title={confirm.title}
@@ -185,7 +185,7 @@ export default function App() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search..."
-            className="w-[72px] text-[12px] py-1 px-0 border-0 border-b border-b-neutral-border bg-transparent text-neutral-text outline-none"
+            className="w-[72px] text-[12px] py-1 px-0 border-0 border-b border-b-neutral-border bg-transparent text-neutral-text outline-none font-display"
           />
         </div>
 

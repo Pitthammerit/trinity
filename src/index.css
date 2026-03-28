@@ -33,6 +33,18 @@ body {
   background: #fff;
 }
 
+:root {
+  --table-cell-font: 14px;
+  --table-header-font: 14px;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --table-cell-font: 19px;
+    --table-header-font: 19px;
+  }
+}
+
 #root {
   max-width: 600px;
   margin: 0 auto;

@@ -63,7 +63,7 @@ export default function DataTable({
     <div ref={listRef} onScroll={handleScroll}
       className="overflow-y-auto transition-[max-height] duration-[400ms] ease-in-out"
       style={{ maxHeight }}>
-      <table className="w-full border-separate text-[14px]"
+      <table className="w-full border-separate"
         style={{ borderSpacing: "0 2px", tableLayout: "fixed" }}>
         <thead>
           <tr>
@@ -71,7 +71,7 @@ export default function DataTable({
               style={glassHeader}>#</th>
             {SECTION_KEYS.map((key) => (
               <th key={key} style={{
-                padding: "8px 8px", textAlign: "left", fontSize: 14, fontWeight: 500,
+                padding: "8px 8px", textAlign: "left", fontSize: "var(--table-header-font)", fontWeight: 500,
                 color: SECTION_META[key].color, borderBottom: `2px solid ${SECTION_META[key].color}`,
                 fontFamily: FONTS.display,
                 ...glassHeader,
@@ -109,7 +109,7 @@ export default function DataTable({
             const cv = colorMap.get(row.id);
             const isActive = active === idx;
             const cellStyle = {
-              padding: "6px 8px", fontSize: 14,
+              padding: "6px 8px", fontSize: "var(--table-cell-font)",
               color: isActive ? NEUTRAL.white : cv.fill, fontWeight: isActive ? 500 : 400,
               background: isActive ? cv.fill : cv.bg + "55",
               transition: ANIM.rowTransition,
