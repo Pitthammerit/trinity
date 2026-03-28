@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect, useLayoutEffect, useMemo } from "react";
-import { MODES, MODE_EXPLORER, MODE_DATA, ANIM, NEUTRAL } from "./constants";
+import { MODES, MODE_EXPLORER, MODE_DATA, ANIM, NEUTRAL, SECTION_META, OM_GRADIENT_STOPS } from "./constants";
 import { useBreathing } from "./hooks/useBreathing";
 import { useTrinityData } from "./hooks/useTrinityData";
 import Triangle from "./components/Triangle";
@@ -15,11 +15,37 @@ export default function App() {
   const [resetKey, setResetKey] = useState(0);
   const [intro, setIntro] = useState(true);
 
+  // WHY phase system: loading screen stays visible ≥2.5s, then fades out, then intro plays
+  // "loading" → show Channeling Trinity; "fading" → fade-out transition; "ready" → main app
+  const [phase, setPhase] = useState("loading");
+  const [minTimeUp, setMinTimeUp] = useState(false);
+
   const { active, displayActive, handleRowClick, reset, shiftDown } = useBreathing();
   const { data, loading, updateCell, deleteRow, addRow } = useTrinityData();
 
   const navRef = useRef(null);
   const btnRefs = useRef({});
+
+  // Minimum 2.5s loading screen
+  useEffect(() => {
+    const timer = setTimeout(() => setMinTimeUp(true), 2500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // When data is loaded AND min time elapsed, start fade-out
+  useEffect(() => {
+    if (!loading && minTimeUp && phase === "loading") {
+      setPhase("fading");
+    }
+  }, [loading, minTimeUp, phase]);
+
+  // After fade-out animation (600ms), enter ready phase
+  useEffect(() => {
+    if (phase === "fading") {
+      const timer = setTimeout(() => setPhase("ready"), 600);
+      return () => clearTimeout(timer);
+    }
+  }, [phase]);
 
   const dismissConfirm = useCallback(() => setConfirm(null), []);
 
@@ -42,14 +68,15 @@ export default function App() {
   // WHY useLayoutEffect: measure pill before paint so it appears immediately on load
   useLayoutEffect(() => {
     measurePill();
-  }, [measurePill, loading]);
+  }, [measurePill, phase]);
 
+  // Intro animation timer starts when app is ready
   useEffect(() => {
-    if (!loading && intro) {
+    if (phase === "ready" && intro) {
       const timer = setTimeout(() => setIntro(false), 3200);
       return () => clearTimeout(timer);
     }
-  }, [loading, intro]);
+  }, [phase, intro]);
 
   const filteredData = useMemo(() => {
     if (search.length >= 2) {
@@ -86,12 +113,16 @@ export default function App() {
     [data, active, deleteRow, reset, shiftDown],
   );
 
-  if (loading) {
+  if (phase !== "ready") {
     return (
-      <div className="flex flex-col items-center justify-center h-screen gap-5">
-        <svg width="60" height="54" viewBox="0 0 100 90" fill="none">
+      <div className="flex flex-col items-center justify-center h-screen gap-3"
+        style={{
+          opacity: phase === "fading" ? 0 : 1,
+          transition: "opacity 0.6s ease-out",
+        }}>
+        <svg width="140" height="126" viewBox="0 0 100 90" fill="none">
           <path d="M50 5 L93 80 L7 80 Z"
-            stroke={NEUTRAL.line} strokeWidth="1.5" strokeLinejoin="round"
+            stroke={NEUTRAL.line} strokeWidth="1.2" strokeLinejoin="round"
             style={{ strokeDasharray: 258, animation: "loading-triangle 2.4s ease-in-out infinite" }} />
         </svg>
         <div className="text-xs text-neutral-muted font-display uppercase tracking-[3px]"
@@ -151,10 +182,11 @@ export default function App() {
             <div
               className="absolute top-0 h-full rounded-full z-0"
               style={{
-                background: NEUTRAL.pillTrack,
                 left: pillPos.left,
                 width: pillPos.width,
                 transition: ANIM.pillSlide,
+                background: `linear-gradient(135deg, ${SECTION_META.beginning.color}35, ${OM_GRADIENT_STOPS[0]}28, ${SECTION_META.middle.color}30, ${OM_GRADIENT_STOPS[2]}28, ${SECTION_META.end.color}35)`,
+                boxShadow: `inset 0 0 0 1px ${SECTION_META.middle.color}20, 0 1px 4px ${SECTION_META.middle.color}15`,
               }}
             />
           )}
