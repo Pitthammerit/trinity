@@ -128,10 +128,11 @@ export default function App() {
             }} />
         </svg>
         <div className="text-xs text-neutral-muted font-display uppercase tracking-[3px]"
-          style={{
-            animation: isFading
-              ? "loading-text-out 0.3s ease-out both"
-              : "loading-pulse 2.4s ease-in-out infinite",
+          style={isFading ? {
+            opacity: 0,
+            transition: "opacity 0.3s ease-out",
+          } : {
+            animation: "loading-pulse 2.4s ease-in-out infinite",
           }}>
           Channeling Trinity
         </div>

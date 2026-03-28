@@ -104,15 +104,10 @@ body {
   50% { opacity: 1; }
 }
 
-/* ── Loading outro: text fades, then triangle undraws clockwise ── */
-
-@keyframes loading-text-out {
-  from { opacity: 1; }
-  to { opacity: 0; }
-}
+/* ── Loading outro: triangle erases clockwise via negative offset ── */
 
 @keyframes loading-triangle-out {
   0%   { stroke-dashoffset: 0; opacity: 1; }
-  90%  { opacity: 1; }
-  100% { stroke-dashoffset: 258; opacity: 0; }
+  85%  { opacity: 1; }
+  100% { stroke-dashoffset: -258; opacity: 0; }
 }
