@@ -101,10 +101,9 @@ export default function Triangle({ active, data, intro }) {
 
       <g>
         <circle cx={cx} cy={cy} r={r} fill="none" stroke={NEUTRAL.line} strokeWidth="0.5"
+          transform={intro ? `rotate(-90 ${cx} ${cy})` : undefined}
           style={intro ? {
             strokeDasharray: CIRCLE_CIRCUMFERENCE,
-            transform: "rotate(-90deg)",
-            transformOrigin: `${cx}px ${cy}px`,
             animation: "intro-draw-circle 1.0s ease-out 0.5s both",
           } : undefined} />
         {RIBBON_DATA.map(({ ribbonD, arrowPoints, sectionColor }, i) => {
