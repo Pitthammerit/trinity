@@ -56,9 +56,13 @@ const RIBBON_DATA = (() => {
   });
 })();
 
+/* ── Intro animation geometry ── */
+const CIRCLE_CIRCUMFERENCE = Math.ceil(2 * Math.PI * r);
+const EDGE_LENGTH = Math.ceil(r * Math.sqrt(3));
+
 /* ── Component ── */
 
-export default function Triangle({ active, data }) {
+export default function Triangle({ active, data, intro }) {
   const hasActive = active !== null && active < data.length;
   const row = hasActive ? data[active] : null;
 
@@ -96,13 +100,22 @@ export default function Triangle({ active, data }) {
       </defs>
 
       <g>
-        <circle cx={cx} cy={cy} r={r} fill="none" stroke={NEUTRAL.line} strokeWidth="0.5" />
+        <circle cx={cx} cy={cy} r={r} fill="none" stroke={NEUTRAL.line} strokeWidth="0.5"
+          style={intro ? {
+            strokeDasharray: CIRCLE_CIRCUMFERENCE,
+            transform: "rotate(-90deg)",
+            transformOrigin: `${cx}px ${cy}px`,
+            animation: "intro-draw-circle 0.7s ease-out 0.3s both",
+          } : undefined} />
         {RIBBON_DATA.map(({ ribbonD, arrowPoints, sectionColor }, i) => {
           const fill = hasActive ? cv.fill : sectionColor;
           return (
-            <g key={i} style={{ transition: ANIM.opacityFade }}>
-              <path d={ribbonD} fill={fill} style={{ transition: ANIM.fillChange }} />
-              <polygon points={arrowPoints} fill={fill} style={{ transition: ANIM.fillChange }} />
+            <g key={i} style={intro
+              ? { animation: `intro-fade 0.4s ease-out ${0.75 + i * 0.1}s both` }
+              : { transition: ANIM.opacityFade }
+            }>
+              <path d={ribbonD} fill={fill} style={intro ? undefined : { transition: ANIM.fillChange }} />
+              <polygon points={arrowPoints} fill={fill} style={intro ? undefined : { transition: ANIM.fillChange }} />
             </g>
           );
         })}
@@ -113,11 +126,17 @@ export default function Triangle({ active, data }) {
           stroke={hasActive ? cv.fill : edge.color}
           strokeWidth={hasActive ? 4.5 : 0.8}
           opacity={hasActive ? 0.3 : 0.4}
-          style={{ transition: ANIM.strokeGrow }} />
+          style={intro
+            ? { strokeDasharray: EDGE_LENGTH, animation: `intro-draw-edge 0.4s ease-out ${0.55 + i * 0.08}s both` }
+            : { transition: ANIM.strokeGrow }
+          } />
       ))}
 
       <text x={cx} y={cy + 5} textAnchor="middle" dominantBaseline="central"
-        style={{ fontSize: SVG.omFontSize, fontWeight: 300, fill: "url(#omRainbow)", fontFamily: FONTS.display }}>
+        style={{
+          fontSize: SVG.omFontSize, fontWeight: 300, fill: "url(#omRainbow)", fontFamily: FONTS.display,
+          ...(intro ? { animation: "intro-breathe 0.6s ease-out 0.15s both", transformOrigin: `${cx}px ${cy}px` } : {}),
+        }}>
         {"\u0950"}
       </text>
 
@@ -130,7 +149,10 @@ export default function Triangle({ active, data }) {
         const hasTwo = fit.lines.length === 2;
         const y1 = hasTwo ? v.y - 11 : v.y - 5;
         return (
-          <g key={v.key}>
+          <g key={v.key} style={intro ? {
+            animation: `intro-bloom 0.5s ease-out ${0.65 + vi * 0.1}s both`,
+            transformOrigin: `${v.x}px ${v.y}px`,
+          } : undefined}>
             <circle cx={v.x} cy={v.y} r={hasActive ? SVG.activeR : SVG.restR}
               fill={hasActive ? cv.bg : sm.color}
               fillOpacity={hasActive ? 1 : 0.08}

@@ -13,6 +13,7 @@ export default function App() {
   const [confirm, setConfirm] = useState(null);
   const [pillPos, setPillPos] = useState(null);
   const [resetKey, setResetKey] = useState(0);
+  const [intro, setIntro] = useState(true);
 
   const { active, displayActive, handleRowClick, reset, shiftDown } = useBreathing();
   const { data, loading, updateCell, deleteRow, addRow } = useTrinityData();
@@ -42,6 +43,13 @@ export default function App() {
   useLayoutEffect(() => {
     measurePill();
   }, [measurePill, loading]);
+
+  useEffect(() => {
+    if (!loading && intro) {
+      const timer = setTimeout(() => setIntro(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [loading, intro]);
 
   const filteredData = useMemo(() => {
     if (search.length >= 2) {
@@ -99,7 +107,7 @@ export default function App() {
         />
       )}
 
-      <div className="text-center">
+      <div className="text-center" style={intro ? { animation: "intro-fade 0.6s ease-out both" } : undefined}>
         <div className="text-[14px] font-normal uppercase tracking-[5px] text-neutral-muted font-display">
           Concept of
         </div>
@@ -118,10 +126,11 @@ export default function App() {
           overflow: "hidden",
         }}
       >
-        <Triangle active={displayActive} data={data} />
+        <Triangle active={displayActive} data={data} intro={intro} />
       </div>
 
-      <div className="flex items-center justify-center gap-1 mb-2.5 mt-1">
+      <div className="flex items-center justify-center gap-1 mb-2.5 mt-1"
+        style={intro ? { animation: "intro-slide-down 0.4s ease-out 1.3s both" } : undefined}>
         <span className="text-[13px] text-neutral-muted whitespace-nowrap">
           {search.length >= 2 ? filteredData.length + "/" : ""}
           {data.length}{"\u25B3"}
@@ -184,6 +193,7 @@ export default function App() {
         </button>
       </div>
 
+      <div style={intro ? { animation: "intro-fade 0.5s ease-out 1.5s both" } : undefined}>
       {(() => {
         const table = (
           <DataTable
@@ -202,8 +212,10 @@ export default function App() {
         );
         return mode === MODE_DATA ? <PasscodeGate>{table}</PasscodeGate> : table;
       })()}
+      </div>
 
-      <div className="text-center mt-6 text-[10px] text-neutral-subtle tracking-[1px] font-display">
+      <div className="text-center mt-6 text-[10px] text-neutral-subtle tracking-[1px] font-display"
+        style={intro ? { animation: "intro-fade 0.3s ease-out 1.7s both" } : undefined}>
         {"\u00A9"} 2026 Muralidher & Benjamin Kurtz, Mysuru, India
       </div>
     </div>

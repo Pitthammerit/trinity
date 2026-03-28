@@ -37,3 +37,38 @@ body {
   max-width: 600px;
   margin: 0 auto;
 }
+
+/* ── Intro animation: "Breath of Creation" ── */
+
+@keyframes intro-breathe {
+  0% { opacity: 0; transform: scale(0); }
+  70% { opacity: 1; transform: scale(1.06); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes intro-draw-circle {
+  from { stroke-dashoffset: 912; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes intro-draw-edge {
+  0% { stroke-dashoffset: 252; opacity: 0; }
+  15% { opacity: 0.4; }
+  100% { stroke-dashoffset: 0; opacity: 0.4; }
+}
+
+@keyframes intro-bloom {
+  0% { opacity: 0; transform: scale(0); }
+  60% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes intro-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes intro-slide-down {
+  from { opacity: 0; transform: translateY(-15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
