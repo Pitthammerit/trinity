@@ -45,10 +45,7 @@ body {
   }
 }
 
-#root {
-  max-width: 600px;
-  margin: 0 auto;
-}
+/* max-width managed by App component for responsive split/single layout */
 
 /* ── Intro animation: "Breath of Creation" ── */
 

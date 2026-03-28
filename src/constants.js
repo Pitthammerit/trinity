@@ -8,9 +8,18 @@ export const SECTION_KEYS = ["beginning", "middle", "end"];
 
 export const MODE_EXPLORER = "explorer";
 export const MODE_LIST = "list";
+export const MODE_SPLIT = "split";
 export const MODE_DATA = "data";
 
-export const MODES = [
+// Desktop (>=1024): Explorer | Split | Data
+// Mobile  (<1024):  Explorer | List  | Data
+export const MODES_DESKTOP = [
+  { key: MODE_EXPLORER, label: "Explorer" },
+  { key: MODE_SPLIT,    label: "Split" },
+  { key: MODE_DATA,     label: "Data" },
+];
+
+export const MODES_MOBILE = [
   { key: MODE_EXPLORER, label: "Explorer" },
   { key: MODE_LIST,     label: "List" },
   { key: MODE_DATA,     label: "Data" },
@@ -53,6 +62,8 @@ export const ANIM = {
   rowTransition: "all 0.15s",
   pillSlide: "left 0.35s cubic-bezier(0.4,0,0.2,1), width 0.3s cubic-bezier(0.4,0,0.2,1)",
   triangleCollapse: "max-height 0.45s ease, opacity 0.35s ease, transform 0.4s ease",
+  splitLayout: "grid-template-columns 0.4s ease-out, max-width 0.4s ease-out",
+  navReposition: "opacity 0.25s ease, transform 0.25s ease",
 };
 
 export const OM_GRADIENT_STOPS = ["#D8A030", "#50B860", "#4070B0"];
