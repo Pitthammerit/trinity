@@ -46,7 +46,7 @@ export default function App() {
     const anim = path?.getAnimations()[0];
     if (!path || !anim) { setPhase("ready"); return; }
 
-    const duration = 2400; // matches CSS animation duration
+    const duration = 3600; // matches CSS animation duration
     const currentTime = anim.currentTime;
 
     // Let current cycle finish naturally, then stop (no more loops)
@@ -139,7 +139,7 @@ export default function App() {
             stroke={NEUTRAL.line} strokeWidth="0.6" strokeLinejoin="round"
             style={{
               strokeDasharray: 258,
-              animation: "loading-triangle 2.4s ease-in-out infinite",
+              animation: "loading-triangle 3.6s ease-in-out infinite",
             }} />
         </svg>
         <div className="text-xs text-neutral-muted font-display uppercase tracking-[3px]"
